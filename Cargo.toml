@@ -1,0 +1,19 @@
+# See https://doc.rust-lang.org/cargo/reference/manifest.html.
+
+[package]
+name = "bgos"
+version = "0.0.0-alpha"
+authors = [
+  "Aleks Todorov (Алекс Тодоров) <aleks.todorov.1337@gmail.com>",
+  "Mihye Jeong (정미혜) <olivegreentea@naver.com>",
+  "President of Bulgaria <priemna@president.bg>",
+  ]
+edition = "2021"
+
+[dependencies]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
