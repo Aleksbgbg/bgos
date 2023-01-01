@@ -13,3 +13,13 @@ Started on 22-12-31.
 ### Build
 
 `cargo build`
+
+### Produce Bootable Image
+
+`cargo bootimage`
+
+### Run
+
+Emulate via QEMU:
+
+`qemu-system-x86_64 -drive format=raw,file=target/amd64-bgos/debug/bootimage-bgos.bin`

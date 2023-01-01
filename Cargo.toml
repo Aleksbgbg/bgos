@@ -11,3 +11,4 @@ authors = [
 edition = "2021"
 
 [dependencies]
+bootloader = "0.9.23"
