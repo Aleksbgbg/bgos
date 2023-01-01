@@ -20,6 +20,6 @@ Started on 22-12-31.
 
 ### Run
 
-Emulate via QEMU:
+Install [QEMU](https://www.qemu.org/) and add it to PATH if necessary.
 
-`qemu-system-x86_64 -drive format=raw,file=target/amd64-bgos/debug/bootimage-bgos.bin`
+Then: `cargo run`
