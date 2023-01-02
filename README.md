@@ -6,6 +6,8 @@ Started on 22-12-31.
 
 ## Dev Workflow
 
+For OS emulation, install [QEMU](https://www.qemu.org/) and add it to PATH if necessary. Afterwards, ensure to restart your terminals / IDEs to refresh their environment variables.
+
 ### Format
 
 `cargo fmt`
@@ -18,8 +20,10 @@ Started on 22-12-31.
 
 `cargo bootimage`
 
-### Run
+### Run (via QEMU)
 
-Install [QEMU](https://www.qemu.org/) and add it to PATH if necessary.
+`cargo run`
 
-Then: `cargo run`
+### Unit Test (via QEMU)
+
+`cargo test`

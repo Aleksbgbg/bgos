@@ -1,12 +1,20 @@
 #![no_std]
 #![no_main]
+#![feature(custom_test_frameworks)]
+#![test_runner(test::test_runner::test_runner)]
+#![reexport_test_harness_main = "test_main"]
 
-mod vga;
+#[allow(dead_code)]
+mod output;
+#[allow(dead_code)]
+mod qemu;
 
-use core::panic::PanicInfo;
+#[cfg(test)]
+mod test;
 
+#[cfg(not(test))]
 #[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
+fn panic(info: &core::panic::PanicInfo) -> ! {
   println!("{}", info);
 
   loop {}
@@ -14,7 +22,15 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-  println!("Hello, world!");
+  #[cfg(not(test))]
+  main();
+
+  #[cfg(test)]
+  test_main();
 
   loop {}
+}
+
+fn main() {
+  println!("Hello, world!");
 }

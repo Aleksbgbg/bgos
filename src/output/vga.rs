@@ -1,4 +1,4 @@
-use core::fmt;
+use core::{fmt, mem};
 use lazy_static::lazy_static;
 use spin::Mutex;
 use volatile::Volatile;
@@ -142,11 +142,46 @@ pub fn _print(args: fmt::Arguments) {
 
 #[macro_export]
 macro_rules! print {
-  ($($arg:tt)*) => ($crate::vga::_print(format_args!($($arg)*)));
+  ($($arg:tt)*) => ($crate::output::vga::_print(format_args!($($arg)*)));
 }
 
 #[macro_export]
 macro_rules! println {
   () => ($crate::print!("\n"));
   ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
+}
+
+fn transform_negative(index: isize, closed_max: usize) -> usize {
+  if index < 0 {
+    ((closed_max as isize) + index) as usize
+  } else {
+    index as usize
+  }
+}
+
+pub fn vga_read(row: isize, col: isize) -> VgaCharacter {
+  let actual_row = transform_negative(row, BUFFER_HEIGHT);
+  let actual_col = transform_negative(col, BUFFER_WIDTH);
+
+  WRITER.lock().buffer.chars[actual_row][actual_col].read().character_code
+}
+
+#[inline]
+#[must_use]
+const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str {
+  // SAFETY: the caller must guarantee that the bytes `v` are valid UTF-8.
+  // Also relies on `&str` and `&[u8]` having the same layout.
+  unsafe { mem::transmute(v) }
+}
+
+pub fn vga_line_buffer() -> [u8; BUFFER_WIDTH] {
+  [ASCII_SPACE; BUFFER_WIDTH]
+}
+
+pub fn vga_read_line<'parent>(row: isize, line: &'parent mut [u8; BUFFER_WIDTH]) -> &'parent str {
+  for index in 0..BUFFER_WIDTH {
+    line[index] = vga_read(row, index as isize);
+  }
+
+  unsafe { from_utf8_unchecked(line) }
 }
