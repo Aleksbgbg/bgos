@@ -1,4 +1,4 @@
-use crate::output::vga::{vga_line_buffer, vga_read_line};
+use crate::output::vga;
 use crate::{assert_starts_with, print, println};
 
 #[test_case]
@@ -22,5 +22,5 @@ fn test_correctly_written() {
 
   print!("{}", STRING);
 
-  assert_starts_with!(STRING, vga_read_line(LAST_LINE, &mut vga_line_buffer()));
+  assert_starts_with!(STRING, vga::vga_read_line(LAST_LINE, &mut vga::vga_line_buffer()));
 }

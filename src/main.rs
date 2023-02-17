@@ -1,27 +1,14 @@
 #![no_std]
 #![no_main]
 #![feature(custom_test_frameworks)]
-#![test_runner(test::test_runner::test_runner)]
+#![test_runner(bgos::test::test_runner::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-#[allow(dead_code)]
-mod output;
-#[allow(dead_code)]
-mod qemu;
-
-#[cfg(test)]
-mod test;
-
-#[cfg(not(test))]
-#[panic_handler]
-fn panic(info: &core::panic::PanicInfo) -> ! {
-  println!("{}", info);
-
-  loop {}
-}
+use bgos::println;
+use core::panic::PanicInfo;
 
 #[no_mangle]
-pub extern "C" fn _start() -> ! {
+extern "C" fn _start() -> ! {
   #[cfg(not(test))]
   main();
 
@@ -33,4 +20,18 @@ pub extern "C" fn _start() -> ! {
 
 fn main() {
   println!("Hello, world!");
+}
+
+#[cfg(not(test))]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+  println!("{}", info);
+
+  loop {}
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+  bgos::test::panic_handler::panic_handler(info)
 }

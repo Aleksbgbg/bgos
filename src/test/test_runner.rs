@@ -5,20 +5,9 @@ pub trait Testable {
   fn run(&self) -> ();
 }
 
-fn crop_letters(string: &str, up_to: usize) -> &str {
-  match string.char_indices().skip(up_to).next() {
-    Some((position, _)) => &string[position..],
-    None => "",
-  }
-}
-
-impl<T> Testable for T
-where
-  T: Fn(),
-{
+impl<T: Fn()> Testable for T {
   fn run(&self) {
-    const UNIT_TEST_PREFIX_LEN: usize = "bgos::test::units::".len();
-    let type_name = crop_letters(core::any::type_name::<T>(), UNIT_TEST_PREFIX_LEN);
+    let type_name = core::any::type_name::<T>();
 
     serial_print!("  {:<60}", type_name);
     self();
@@ -37,6 +26,8 @@ pub fn test_runner(tests: &[&dyn Testable]) {
   for test in tests {
     test.run();
   }
+
+  serial_println!();
 
   exit_qemu(QemuExitCode::Success);
 }
