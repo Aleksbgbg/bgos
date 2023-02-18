@@ -9,6 +9,10 @@ use core::panic::PanicInfo;
 
 #[no_mangle]
 extern "C" fn _start() -> ! {
+  bgos::init();
+
+  x86_64::instructions::interrupts::int3();
+
   #[cfg(not(test))]
   main();
 
