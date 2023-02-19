@@ -5,6 +5,7 @@
 #![test_runner(test::test_runner::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+pub mod global_descriptor_table;
 pub mod interrupts;
 #[allow(dead_code)]
 pub mod output;
@@ -30,5 +31,6 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
 }
 
 pub fn init() {
+  global_descriptor_table::init();
   interrupts::init_interrupt_table();
 }
